@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 from ucimlrepo import fetch_ucirepo
 from sklearn.preprocessing import StandardScaler
 
@@ -69,11 +68,19 @@ clusters, centroids = kmeans(X_scaled, k=3)
 X_selected_df = pd.DataFrame(X_scaled, columns=selected_features)
 X_selected_df['Cluster'] = clusters
 
-# Visualize the results
-plt.figure(figsize=(12, 6))
-sns.scatterplot(data=X_selected_df, x='Alcohol', y='Malicacid', hue='Cluster', palette='viridis')
-plt.scatter(centroids[:, 0], centroids[:, 1], s=300, c='red', marker='X')  # Plot centroids
-plt.title('Clusters de K-means en la base de datos de vino (Implementación Manual)')
-plt.xlabel('Alcohol')
-plt.ylabel('Malic Acid')
+# Visualize the results in 3D
+fig = plt.figure(figsize=(12, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# Scatter plot
+scatter = ax.scatter(X_selected_df['Alcohol'], X_selected_df['Malicacid'], X_selected_df['Ash'], c=X_selected_df['Cluster'], cmap='viridis')
+
+# Plot centroids
+ax.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2], s=300, c='red', marker='X', label='Centroids')
+
+ax.set_title('Clusters de K-means en la base de datos de vino')
+ax.set_xlabel('Alcohol')
+ax.set_ylabel('Malic Acid')
+ax.set_zlabel('Ash')
+plt.legend()
 plt.show()
