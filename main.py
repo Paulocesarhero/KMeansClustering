@@ -11,7 +11,7 @@ def euclidean_distance(a, b):
     """
     return np.sqrt(np.sum((a - b)**2))
 
-def initialize_centroids(X, k, random_state=42):
+def initialize_centroids(X, k, random_state=None):
     """
     Inicializa los centroides aleatoriamente desde los datos.
     """
@@ -45,6 +45,16 @@ def update_centroids(X, clusters, k):
         new_centroids.append(new_centroid)
     return np.array(new_centroids)
 
+def count_cluster_elements(clusters):
+    """
+    Cuenta el número de elementos en cada cluster.
+    """
+    counts = np.bincount(clusters)
+    for i, count in enumerate(counts):
+        print(f'Cluster {i} tiene {count} elementos')
+
+
+
 def kmeans(X, k, max_iters=100):
     """
     Ejecuta el algoritmo K-means.
@@ -61,8 +71,7 @@ def kmeans(X, k, max_iters=100):
 # Cargar el dataset
 wine = fetch_ucirepo(id=109)
 
-# Seleccionar atributos y escalar datos
-selected_features = ['Alcohol', 'Malicacid', 'Ash']
+selected_features = ['Alcohol', 'Malicacid', 'Color_intensity']
 X_selected = wine.data.features[selected_features].values
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X_selected)
@@ -70,6 +79,7 @@ X_scaled = scaler.fit_transform(X_selected)
 # Aplicar K-means con 3 clusters (cambiar 'k' para ver el efecto)
 k = 3
 clusters, centroids = kmeans(X_scaled, k=k)
+count_cluster_elements(clusters)
 
 # Agregar los clusters al DataFrame
 X_selected_df = pd.DataFrame(X_scaled, columns=selected_features)
@@ -83,7 +93,7 @@ ax = fig.add_subplot(111, projection='3d')
 scatter = ax.scatter(
     X_selected_df['Alcohol'],
     X_selected_df['Malicacid'],
-    X_selected_df['Ash'],
+    X_selected_df['Color_intensity'],
     c=X_selected_df['Cluster'],
     cmap='viridis'
 )
@@ -103,10 +113,11 @@ ax.scatter(
 ax.set_title(f'Clusters de K-means en la base de datos de vino (k={k})')
 ax.set_xlabel('Alcohol')
 ax.set_ylabel('Malic Acid')
-ax.set_zlabel('Ash')
+ax.set_zlabel('Color Intensity')
 ax.legend()
 plt.show()
 
 # Imprimir centroides
 print(f'Centroides para k={k}:')
 print(centroids)
+
