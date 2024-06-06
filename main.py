@@ -76,7 +76,7 @@ X_selected = wine.data.features[selected_features].values
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X_selected)
 
-# Aplicar K-means con 3 clusters (cambiar 'k' para ver el efecto)
+# Aplicar K-means con 3 clusters
 k = 3
 clusters, centroids = kmeans(X_scaled, k=k)
 count_cluster_elements(clusters)
